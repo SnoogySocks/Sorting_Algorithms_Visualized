@@ -1,52 +1,167 @@
 package view;
 
-import model.SortingArray;
-
+import javax.swing.*;
 import java.awt.*;
+import java.util.Random;
 
-public class VisualizedSortingArray extends SortingArray {
+import static model.Constants.*;
+
+public class VisualizedSortingArray extends JPanel {
+    
+    private int[] array;
+    private int max;
+    private int comparisonsCount, setsCount;
+    
+    private int[] barColor;
+    private int barWidth;
+    private double barHeightUnits;
+    
+    private long frameRate;
+    
+    public VisualizedSortingArray () {
+        
+        setBackground(Color.darkGray);
+        array = null;
+        max = Integer.MIN_VALUE;
+        resetCounts();
+    
+        barColor = null;
+        frameRate = 1000000000L;
+        
+    }
     
     public VisualizedSortingArray (int length) {
-        super(length);
+        this();
+        updateLength(length);
     }
     
-    public VisualizedSortingArray (SortingArray array) {
-        super(array);
+    public void updateLength (int length) {
+        
+        barColor = new int[length];
+        array = new int[length];
+        frameRate /= length;
+        
+        barWidth = DISPLAY_PANEL_WIDTH/length;
+        barHeightUnits = (double) DISPLAY_PANEL_HEIGHT/length;
+        
     }
     
-    public void highlight (int index, Color color) {
-    
-    
-    
+    /**
+     * Fill the array with values in the range [1, array.length]
+     * such that there are no duplicate numbers in the range
+     */
+    public void generateBalancedArray () {
+        for (int i = 0; i<array.length; ++i)
+            set(i, (int) Math.round(barHeightUnits*(i+1)));
     }
     
-    public void highlight (int left, int right) {
-        // TODO highlight a range of indices
+    /**
+     * Shuffle the elements in the array
+     */
+    public void shuffle () {
+        
+        Random random = new Random();
+        for (int i = array.length-1; i>=1; --i)
+            swap(i, random.nextInt(i+1));
+        
     }
     
-    @Override
+    public void sleep () {
+        long startTime = System.nanoTime();
+        while (System.nanoTime()-startTime<frameRate) ;
+    }
+    
+    public void select (int index) {
+        barColor[index] = SELECTED;
+        sleep();
+    }
+    
+    public int length () {
+        return array.length;
+    }
+    
     public int get (int index) {
-//        highlight(index, );
-        return super.get(index);
+        
+        select(index);
+        repaint();
+        return array[index];
+        
     }
     
-    @Override
     public void set (int index, int value) {
-//        highlight(index, );
-        super.set(index, value);
+        
+        select(index);
+        ++setsCount;
+        max = Math.max(max, value);
+        array[index] = value;
+        
+        repaint();
+        
+    }
+    
+    public void swap (int i, int j) {
+    
+        setsCount += 2;
+        int temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+        
+        barColor[i] = SELECTED;
+        barColor[j] = SELECTED;
+        sleep();
+        
+        repaint();
+        
+    }
+    
+    public boolean isGreater (int val1, int val2) {
+        ++comparisonsCount;
+        return val1>val2;
+    }
+    
+    public int getMax () {
+        return max;
+    }
+    
+    public int getCountSets () {
+        return setsCount;
+    }
+    
+    public int getComparisonsCount () {
+        return comparisonsCount;
+    }
+    
+    private void resetCounts () {
+        comparisonsCount = setsCount = 0;
     }
     
     @Override
-    public void swap (int i, int j) {
-//        highlight(i, ), highlight(j, );
-        super.swap(i, j);
+    protected void paintComponent (Graphics g) {
+        
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        
+        for (int i = 0; i<array.length; ++i) {
+            
+            // Fade the color away
+            int val = Math.min(255-barColor[i]*2, 255);
+            g2d.setColor(new Color(255, val, val));
+            barColor[i] = Math.max(barColor[i]-COLOR_RATE_OF_CHANGE, UNSELECTED);
+            
+            // Calculate the bar coordinates and display them to the screen
+            int barHeight = array[i];
+            int xBegin = i*barWidth;
+            int yBegin = DISPLAY_PANEL_HEIGHT-barHeight;
+            g2d.fillRect(xBegin, yBegin, barWidth, barHeight);
+            
+        }
+        
     }
     
     @Override
     public String toString () {
-        return "VisualizedSortingArray{"+
-                super.toString()+
-                "}";
+        return "# of Comparisons: "+comparisonsCount+
+                "\n# of Array Accesses: "+setsCount;
     }
     
 }
