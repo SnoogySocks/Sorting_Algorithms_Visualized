@@ -1,5 +1,6 @@
 import controller.SortingVisualizationController;
 import model.MergeSort;
+import view.SFX;
 import view.VisualizedSortingArray;
 
 import javax.swing.*;

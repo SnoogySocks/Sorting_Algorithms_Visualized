@@ -22,9 +22,9 @@ public class AlgorithmAnalysisPanel extends JPanel {
         setLayout(null);
         
         analysis = new JLabel();
-        analysis.setBounds(10, 10, 300, ANALYSIS_PANEL_HEIGHT-20);
+        analysis.setBounds(10, 10, 300, ANALYSIS_PANEL_HEIGHT-55);
         analysis.setForeground(Color.white);
-        setAnalysis(algorithm, array);
+        setAnalysis(algorithm);
         add(analysis);
         
         startButton = new JButton("Press to Start");
@@ -38,8 +38,8 @@ public class AlgorithmAnalysisPanel extends JPanel {
         
     }
     
-    public void setAnalysis (SortingAlgorithm algorithm, VisualizedSortingArray array) {
-        analysis.setText("<html>"+algorithm.toString()+"<br/>"+array.toString()+"</html>");
+    public void setAnalysis (SortingAlgorithm algorithm) {
+        analysis.setText("<html>"+algorithm.toString()+"</html>");
     }
     
     public JButton getStartButton () {

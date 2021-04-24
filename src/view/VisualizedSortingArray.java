@@ -18,6 +18,9 @@ public class VisualizedSortingArray extends JPanel {
     
     private long frameRate;
     
+    private JLabel analysis;
+    private SFX sfx;
+    
     public VisualizedSortingArray () {
         
         setBackground(Color.darkGray);
@@ -28,6 +31,13 @@ public class VisualizedSortingArray extends JPanel {
         barColor = null;
         frameRate = 1_000_000_000L;
         
+        analysis = new JLabel(toString());
+        analysis.setBounds(10, 33, 300, ANALYSIS_PANEL_HEIGHT-20);
+        analysis.setForeground(Color.white);
+        
+        sfx = new SFX();
+    
+    
     }
     
     public VisualizedSortingArray (int length) {
@@ -73,6 +83,7 @@ public class VisualizedSortingArray extends JPanel {
     void select (int index) {
         
         barColor[index] = SELECTED;
+        new Thread(()->sfx.playSound()).start();
         sleep();
         repaint();
         
@@ -129,17 +140,25 @@ public class VisualizedSortingArray extends JPanel {
         comparisonsCount = setsCount = 0;
     }
     
+    public JLabel getAnalysis () {
+        return analysis;
+    }
+    
     @Override
     protected void paintComponent (Graphics g) {
         
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
+        analysis.setText(toString());
         
         for (int i = 0; i<array.length; ++i) {
             
             // Fade the color away
-            int val = Math.min(255-barColor[i]*2, 255);
-            g2d.setColor(new Color(255, val, val));
+            if (barColor[i]==SELECTED) g2d.setColor(new Color(90, 255, 30));
+            else {
+                int val = Math.min(255-barColor[i]*2, 255);
+                g2d.setColor(new Color(255, val, val));
+            }
             barColor[i] = Math.max(barColor[i]-COLOR_RATE_OF_CHANGE, UNSELECTED);
             
             // Calculate the bar coordinates and display them to the screen
@@ -169,8 +188,9 @@ public class VisualizedSortingArray extends JPanel {
     
     @Override
     public String toString () {
-        return "# of Comparisons: "+comparisonsCount+
-                "<br/># of Array Accesses: "+setsCount;
+        return "<html># of Comparisons: "+comparisonsCount+
+                "<br/># of Array Accesses: "+setsCount
+                +"</html>";
     }
     
 }

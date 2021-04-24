@@ -57,11 +57,12 @@ public class SortingVisualizationController extends JFrame {
     
         analysisPanel = new AlgorithmAnalysisPanel(algorithms[algorithm], array);
         analysisPanel.setBounds(0, 0, ANALYSIS_PANEL_WIDTH, ANALYSIS_PANEL_HEIGHT);
+        analysisPanel.add(array.getAnalysis());
         
         analysisPanel.getStartButton().addActionListener(event->new Thread(()->{
     
             int length = Integer.parseInt(analysisPanel.getLengthInput().getText().trim());
-            if (isRunning&&length>ARRAY_PANEL_WIDTH) return;
+            if (isRunning||length>ARRAY_PANEL_WIDTH) return;
             isRunning = true;
             
             // Create a new array if it is a new length
@@ -72,11 +73,11 @@ public class SortingVisualizationController extends JFrame {
             }
             
             array.resetCounts();
-            analysisPanel.setAnalysis(algorithms[algorithm], array);
+            analysisPanel.setAnalysis(algorithms[algorithm]);
             array.shuffle();
             algorithms[algorithm].sort(array);
             array.clearSelected();
-            analysisPanel.setAnalysis(algorithms[algorithm], array);
+            analysisPanel.setAnalysis(algorithms[algorithm]);
             
             isRunning = false;
             
@@ -99,7 +100,7 @@ public class SortingVisualizationController extends JFrame {
             // Transition the algorithm to the selected one
             algorithmMenuItems[j].addActionListener(event->{
                 algorithm = j;
-                analysisPanel.setAnalysis(algorithms[algorithm], array);
+                analysisPanel.setAnalysis(algorithms[algorithm]);
             });
 
             algorithmsMenu.add(algorithmMenuItems[j]);
