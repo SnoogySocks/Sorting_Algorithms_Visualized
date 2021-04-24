@@ -24,9 +24,9 @@ public class VisualizedSortingArray extends JPanel {
         array = null;
         max = Integer.MIN_VALUE;
         resetCounts();
-    
+        
         barColor = null;
-        frameRate = 1000000000L;
+        frameRate = 1_000_000_000L;
         
     }
     
@@ -41,8 +41,8 @@ public class VisualizedSortingArray extends JPanel {
         array = new int[length];
         frameRate /= length;
         
-        barWidth = DISPLAY_PANEL_WIDTH/length;
-        barHeightUnits = (double) DISPLAY_PANEL_HEIGHT/length;
+        barWidth = ARRAY_PANEL_WIDTH/length;
+        barHeightUnits = (double) ARRAY_PANEL_HEIGHT/length;
         
     }
     
@@ -53,6 +53,8 @@ public class VisualizedSortingArray extends JPanel {
     public void generateBalancedArray () {
         for (int i = 0; i<array.length; ++i)
             set(i, (int) Math.round(barHeightUnits*(i+1)));
+        resetCounts();
+        clearSelected();
     }
     
     /**
@@ -63,17 +65,17 @@ public class VisualizedSortingArray extends JPanel {
         Random random = new Random();
         for (int i = array.length-1; i>=1; --i)
             swap(i, random.nextInt(i+1));
+        resetCounts();
+        clearSelected();
         
     }
     
-    public void sleep () {
-        long startTime = System.nanoTime();
-        while (System.nanoTime()-startTime<frameRate) ;
-    }
-    
-    public void select (int index) {
+    void select (int index) {
+        
         barColor[index] = SELECTED;
         sleep();
+        repaint();
+        
     }
     
     public int length () {
@@ -81,36 +83,28 @@ public class VisualizedSortingArray extends JPanel {
     }
     
     public int get (int index) {
-        
         select(index);
-        repaint();
         return array[index];
-        
     }
     
     public void set (int index, int value) {
         
-        select(index);
         ++setsCount;
         max = Math.max(max, value);
         array[index] = value;
-        
-        repaint();
+        select(index);
         
     }
     
     public void swap (int i, int j) {
-    
+        
         setsCount += 2;
         int temp = array[i];
         array[i] = array[j];
         array[j] = temp;
         
-        barColor[i] = SELECTED;
-        barColor[j] = SELECTED;
-        sleep();
-        
-        repaint();
+        select(i);
+        select(j);
         
     }
     
@@ -131,7 +125,7 @@ public class VisualizedSortingArray extends JPanel {
         return comparisonsCount;
     }
     
-    private void resetCounts () {
+    public void resetCounts () {
         comparisonsCount = setsCount = 0;
     }
     
@@ -149,11 +143,26 @@ public class VisualizedSortingArray extends JPanel {
             barColor[i] = Math.max(barColor[i]-COLOR_RATE_OF_CHANGE, UNSELECTED);
             
             // Calculate the bar coordinates and display them to the screen
-            int barHeight = array[i];
-            int xBegin = i*barWidth;
-            int yBegin = DISPLAY_PANEL_HEIGHT-barHeight;
+            int barHeight, xBegin, yBegin;
+            barHeight = array[i];
+            xBegin = i*barWidth;
+            yBegin = ARRAY_PANEL_HEIGHT-barHeight;
             g2d.fillRect(xBegin, yBegin, barWidth, barHeight);
             
+        }
+        
+    }
+    
+    public void sleep () {
+        long startTime = System.nanoTime();
+        while (System.nanoTime()-startTime<frameRate) ;
+    }
+    
+    public void clearSelected () {
+        
+        for (int i = 0; i<40; ++i) {
+            sleep();
+            repaint();
         }
         
     }
@@ -161,7 +170,7 @@ public class VisualizedSortingArray extends JPanel {
     @Override
     public String toString () {
         return "# of Comparisons: "+comparisonsCount+
-                "\n# of Array Accesses: "+setsCount;
+                "<br/># of Array Accesses: "+setsCount;
     }
     
 }

@@ -8,10 +8,6 @@ public class MergeSort extends SortingAlgorithm {
         super("Merge Sort", "O(nlogn)", "O(n)");
     }
     
-    public MergeSort (String name, String timeComplexity, String spaceComplexity) {
-        super(name, timeComplexity, spaceComplexity);
-    }
-    
     @Override
     public void sort (VisualizedSortingArray array) {
     

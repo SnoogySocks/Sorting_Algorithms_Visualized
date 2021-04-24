@@ -30,8 +30,8 @@ public abstract class SortingAlgorithm {
     @Override
     public String toString () {
         return "Sorting Algorithm: "+name+
-                "\nTime Complexity: "+timeComplexity+
-                "\bSpace Complexity: "+spaceComplexity;
+                "<br/>Time Complexity: "+timeComplexity+
+                "<br/>Space Complexity: "+spaceComplexity;
     }
     
 }
