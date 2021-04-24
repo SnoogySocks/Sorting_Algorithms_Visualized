@@ -39,7 +39,7 @@ public class VisualizedSortingArray extends JPanel {
         
         barColor = new int[length];
         array = new int[length];
-        frameRate /= length;
+        frameRate = 1_000_000_000L/length;
         
         barWidth = ARRAY_PANEL_WIDTH/length;
         barHeightUnits = (double) ARRAY_PANEL_HEIGHT/length;
@@ -160,7 +160,7 @@ public class VisualizedSortingArray extends JPanel {
     
     public void clearSelected () {
         
-        for (int i = 0; i<40; ++i) {
+        for (int i = 0; i<array.length/2; ++i) {
             sleep();
             repaint();
         }

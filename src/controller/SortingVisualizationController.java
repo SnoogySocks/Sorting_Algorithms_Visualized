@@ -22,10 +22,7 @@ public class SortingVisualizationController extends JFrame {
     // GUI stuff
     private JPanel display;
     
-    // Update length textArea
-    private TextArea lengthInput;
-    
-    private static final int DEFAULT_ARRAY_LENGTH = 1000;
+    private static final int DEFAULT_ARRAY_LENGTH = 100;
     private VisualizedSortingArray array;
     private AlgorithmAnalysisPanel analysisPanel;
     
@@ -60,19 +57,31 @@ public class SortingVisualizationController extends JFrame {
     
         analysisPanel = new AlgorithmAnalysisPanel(algorithms[algorithm], array);
         analysisPanel.setBounds(0, 0, ANALYSIS_PANEL_WIDTH, ANALYSIS_PANEL_HEIGHT);
+        
         analysisPanel.getStartButton().addActionListener(event->new Thread(()->{
     
-            if (isRunning) return;
-            
+            int length = Integer.parseInt(analysisPanel.getLengthInput().getText().trim());
+            if (isRunning&&length>ARRAY_PANEL_WIDTH) return;
             isRunning = true;
+            
+            // Create a new array if it is a new length
+            if (length!=array.length()) {
+                array.updateLength(length);
+                array.generateBalancedArray();
+                array.clearSelected();
+            }
+            
             array.resetCounts();
+            analysisPanel.setAnalysis(algorithms[algorithm], array);
             array.shuffle();
             algorithms[algorithm].sort(array);
             array.clearSelected();
             analysisPanel.setAnalysis(algorithms[algorithm], array);
+            
             isRunning = false;
             
         }).start());
+        
         display.add(analysisPanel);
 
         algorithmsMenuBar = new JMenuBar();
