@@ -2,7 +2,7 @@ package model;
 
 public class Constants {
     
-    public static final int ARRAY_PANEL_WIDTH = 1000;
+    public static final int ARRAY_PANEL_WIDTH = 1024;
     public static final int ARRAY_PANEL_HEIGHT = 500;
     
     public static final int ANALYSIS_PANEL_WIDTH = ARRAY_PANEL_WIDTH;

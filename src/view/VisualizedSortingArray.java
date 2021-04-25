@@ -83,7 +83,6 @@ public class VisualizedSortingArray extends JPanel {
     void select (int index) {
         
         barColor[index] = SELECTED;
-        new Thread(()->sfx.playSound()).start();
         sleep();
         repaint();
         
@@ -150,6 +149,7 @@ public class VisualizedSortingArray extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         analysis.setText(toString());
+        new Thread(()->sfx.playSound()).start();
         
         for (int i = 0; i<array.length; ++i) {
             

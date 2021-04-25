@@ -22,7 +22,7 @@ public class SortingVisualizationController extends JFrame {
     // GUI stuff
     private JPanel display;
     
-    private static final int DEFAULT_ARRAY_LENGTH = 100;
+    private static final int DEFAULT_ARRAY_LENGTH = 128;
     private VisualizedSortingArray array;
     private AlgorithmAnalysisPanel analysisPanel;
     
